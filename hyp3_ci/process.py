@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 ci processing
 """
@@ -6,6 +5,8 @@ ci processing
 import argparse
 import logging
 import os
+
+import hyp3_ci
 
 log = logging.getLogger(__name__)
 
@@ -24,11 +25,12 @@ def process(hello_world=False):
 def main():
     """Main entrypoint"""
     parser = argparse.ArgumentParser(
-        prog=os.path.basename(__file__),
+        prog='proc_ci',
         description=__doc__,
     )
     parser.add_argument('--hello-world', action='store_true',
                         help='Print "Hello world!"')
+    parser.add_argument('--version', action='version', version=f'%(prog)s {hyp3_ci.__version__}')
     args = parser.parse_args()
 
     process(**args.__dict__)
