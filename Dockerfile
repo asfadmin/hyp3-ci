@@ -38,7 +38,7 @@ RUN conda create -y -c conda-forge -n hyp3-ci python=3.7 \
     boto3 gdal imageio importlib_metadata lxml matplotlib netCDF4 numpy \
     pillow proj psycopg2 requests scipy setuptools six statsmodels wheel && \
     conda clean -afy && \
-    conda activate hyp3_ci && \
+    conda activate hyp3-ci && \
     sed -i 's/conda activate base/conda activate hyp3-ci/g' /home/conda/.profile
 
 ARG S3_PYPI_HOST
