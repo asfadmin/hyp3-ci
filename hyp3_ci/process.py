@@ -4,7 +4,6 @@ ci processing
 
 import argparse
 import logging
-import os
 
 import hyp3_ci
 

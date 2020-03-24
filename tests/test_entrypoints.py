@@ -6,4 +6,3 @@ def test_hyp3_ci(script_runner):
 def test_proc_ci(script_runner):
     ret = script_runner.run('proc_ci', '-h')
     assert ret.success
-
