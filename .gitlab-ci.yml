@@ -152,6 +152,11 @@ package S3 PyPI:
     - python3 setup.py sdist bdist_wheel
     - echo "Uploading version $(python3 setup.py --version) to S3-PyPI"
     - s3pypi --bucket hyp3-pypi --verbose
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_COMMIT_REF_PROTECTED == 'true'
 
 
 Dockerize:
@@ -179,7 +184,11 @@ Dockerize:
     # FIXME: Move down to verify job -- only push latest *after* container analysis passes
     - docker tag ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_} ${HYP3_REGISTRY}/hyp3-ci:latest
     - docker push ${HYP3_REGISTRY}/hyp3-ci:latest
-
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_COMMIT_REF_PROTECTED == 'true'
 
 test S3 PyPI:
   stage: verify
@@ -189,7 +198,11 @@ test S3 PyPI:
     - export SDIST_VERSION=$(python3 setup.py --version)
   script:
     - tox -e py37-verify
-
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_COMMIT_REF_PROTECTED == 'true'
 
 # TODO: Verify and scan docker container...
 #       * static analysis: https://github.com/optiopay/klar
