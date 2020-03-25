@@ -49,7 +49,7 @@ default:
     - *before_defaults
 
 stages:
-    # TODO: - tools-bot
+    - tools-bot
     - static analysis
     - test
     - dependancy analysis
@@ -57,6 +57,27 @@ stages:
     - dockerize
     - verify
     # TODO: - trigger
+
+
+Tag version:
+  stage: tools-bot
+  before_script:
+    - *before_defaults
+    - 'which ssh-agent || ( apt-get update -y && apt-get install -y openssh-client)'
+    - eval $(ssh-agent -s)
+    - ssh-add "${GITLAB_TOOLS_BOT_SSH}"
+    - git config --global user.email "uaf-asf-apd@alaska.edu"
+    - git config --global user.name "Tools-bot"
+    - apt-get install -y jq
+    - 'export BUMP_PART=$(curl -LsS -H "PRIVATE-TOKEN: ${GITLAB_TOOLS_BOT_PAK}" "https://scm.asf.alaska.edu/api/v4/projects/${CI_PROJECT_ID}/repository/commits/${CI_COMMIT_SHA}/merge_requests" | jq -c --raw-output ''.[0].labels[] | select(. == "major" or . == "minor" or . == "patch")'' | sort | head -1)'
+    - python3 -m pip install bump2version
+  script:
+    - bump2version --current-version $(git describe --abbrev=0) --tag --tag-message "${CI_COMMIT_MESSAGE}" "${BUMP_PART}"
+    - git checkout develop && git pull --ff-only
+    - git merge --ff-only master
+    - git push --all --tags
+  only:
+    - master
 
 
 bandit SAST:
