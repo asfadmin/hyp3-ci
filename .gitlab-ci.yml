@@ -12,6 +12,22 @@ variables:
   - python3 -m pip install --upgrade pip
   - python3 -m pip install --upgrade setuptools wheel twine s3pypi "setuptools-scm[toml]" importlib_metadata
 
+
+# NOTE: the templates below are so that we can add additional jobs to the CI
+#       pipeline for merge requests (MR). Ideally, anytime someone pushes to *any*
+#       branch, we would just run basic static analysis, and then, when a MR is
+#       opened, we'd add in building and deploying the python package to S3 and
+#       the docker container to ECR so that reviewers can easily test the MR.
+#       HOWEVER, gitlab's merge requests pipelines work differently than other
+#       pipelines meaning we need to specify `only: [branches, merge_requests]`
+#       for jobs we want to always run:
+#           https://stackoverflow.com/questions/52746338/in-gitlab-ci-is-there-a-variable-for-a-merge-requests-target-branch/52944197#52944197
+#       But doing so creates both a "push" pipeline and a "MR" pipeline, so the
+#       `always_run` jobs are run in duplicate. There doesn't seem to be any
+#       easy way around this currently:
+#           https://gitlab.com/gitlab-org/gitlab-foss/issues/56632
+#      So, our team we'll have to live with duplicates for a bit, and follow
+#      "only open a MR when you're ready for review!" best practice.
 .always_run_template: &always_run
   only:
     - branches
@@ -24,14 +40,11 @@ variables:
     variables:
       - $CI_COMMIT_REF_PROTECTED == 'true'
 
+
 default:
   image:
     name: continuumio/miniconda3:latest
     entrypoint: ["/bin/bash"]
-  # Tags are not(!) inherited by jobs, contrary to the docs.
-  # See: https://gitlab.com/gitlab-org/gitlab/issues/194312
-  # tags:
-  #   - kubernetes
   before_script:
     - *before_defaults
 
