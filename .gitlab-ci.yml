@@ -12,12 +12,12 @@ variables:
   - python3 -m pip install --upgrade pip
   - python3 -m pip install --upgrade setuptools wheel twine s3pypi "setuptools-scm[toml]" importlib_metadata
 
-.mr_protected_template: &only_mr_protected
-  only:
-    - merge_requests
-  except:
-    variables:
-      - $CI_COMMIT_REF_PROTECTED == 'true'
+#.mr_protected_template: &only_mr_protected
+#  only:
+#    - merge_requests
+#  except:
+#    variables:
+#      - $CI_COMMIT_REF_PROTECTED == 'true'
 
 default:
   image:
@@ -159,7 +159,10 @@ package S3 PyPI:
     - python3 setup.py sdist bdist_wheel
     - echo "Uploading version $(python3 setup.py --version) to S3-PyPI"
     - s3pypi --bucket hyp3-pypi --verbose
-  <<: *only_mr_protected
+  # <<: *only_mr_protected
+  only:
+    variables:
+      - $CI_COMMIT_REF_PROTECTED == 'true'
 
 
 Dockerize:
@@ -173,7 +176,6 @@ Dockerize:
     - export CI_JOB_TIMESTAMP=$(date --utc --rfc-3339=seconds)
     - aws s3 cp s3://hyp3-docker/software/isce-2.0.0_20160906.tar.gz .
     - tar -zxvf isce-2.0.0_20160906.tar.gz
-
   script:
     - docker build --no-cache
       -t ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_}
@@ -187,7 +189,10 @@ Dockerize:
     # FIXME: Move down to verify job -- only push latest *after* container analysis passes
     - docker tag ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_} ${HYP3_REGISTRY}/hyp3-ci:latest
     - docker push ${HYP3_REGISTRY}/hyp3-ci:latest
-  <<: *only_mr_protected
+  # <<: *only_mr_protected
+  only:
+    variables:
+      - $CI_COMMIT_REF_PROTECTED == 'true'
 
 test S3 PyPI:
   stage: verify
@@ -197,7 +202,11 @@ test S3 PyPI:
     - export SDIST_VERSION=$(python3 setup.py --version)
   script:
     - tox -e py37-verify
-  <<: *only_mr_protected
+  # <<: *only_mr_protected
+  only:
+    variables:
+      - $CI_COMMIT_REF_PROTECTED == 'true'
+
 
 # TODO: Verify and scan docker container...
 #       * static analysis: https://github.com/optiopay/klar
