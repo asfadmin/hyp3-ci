@@ -63,10 +63,9 @@ Tag version:
   before_script:
     - *before_defaults
     - 'which ssh-agent || ( apt-get update -y && apt-get install -y openssh-client)'
-    - 'mkdir -p ~/.ssh && echo -e "Host *\n\tStrictHostKeyChecking no\n\tIdentityFile ~/.ssh/id_rsa\n\n" > ~/.ssh/config'
-    - 'cp "${GITLAB_TOOLS_BOT_SSH}" ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa'
     - eval $(ssh-agent -s)
-    - 'ssh-add ~/.ssh/id_rsa'
+    - 'mkdir -p ~/.ssh && echo -e "Host *\n\tStrictHostKeyChecking no\n\tPreferredauthentications publickey\n\tIdentityFile ${GITLAB_TOOLS_BOT_SSH}" > ~/.ssh/config'
+    - 'chmod 600 "${GITLAB_TOOLS_BOT_SSH}" && ssh-add ${GITLAB_TOOLS_BOT_SSH}'
     - git config --global user.email "UAF-asf-apd@alaska.edu"
     - git config --global user.name "Tools-bot"
     - git fetch --all
