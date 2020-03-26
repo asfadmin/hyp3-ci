@@ -69,6 +69,8 @@ Tag version:
     - git config --global user.email "uaf-asf-apd@alaska.edu"
     - git config --global user.name "Tools-bot"
     - git fetch --all
+    - git remote set-url --push origin git@scm.asf.alaska.edu:hyp3/hyp3-ci.git
+    - git remote -v
     - apt-get install -y jq curl
     - 'export MERGE_REQUEST_PARENT=$(git log --pretty=%P -n 1 "${CI_COMMIT_SHA}" | awk -F '' '' ''{print $2}'')'
     - 'export BUMP_PART=$(curl -LsS -H "PRIVATE-TOKEN: ${GITLAB_TOOLS_BOT_PAK}" "https://scm.asf.alaska.edu/api/v4/projects/${CI_PROJECT_ID}/repository/commits/${MERGE_REQUEST_PARENT}/merge_requests" | jq -c --raw-output ''.[0].labels[] | select(. == "major" or . == "minor" or . == "patch")'' | sort | head -1)'
