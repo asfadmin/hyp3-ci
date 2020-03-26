@@ -1,3 +1,4 @@
 # Hyp3 CI
 
-Space to play with CI/CD pipelines for HyP3
+A space to play with CI/CD pipelines for HyP3
+
