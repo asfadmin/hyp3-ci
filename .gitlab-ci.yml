@@ -68,7 +68,7 @@ Tag version:
     - ssh-add "${GITLAB_TOOLS_BOT_SSH}"
     - git config --global user.email "uaf-asf-apd@alaska.edu"
     - git config --global user.name "Tools-bot"
-    - apt-get install -y jq
+    - apt-get install -y jq curl
     - 'export BUMP_PART=$(curl -LsS -H "PRIVATE-TOKEN: ${GITLAB_TOOLS_BOT_PAK}" "https://scm.asf.alaska.edu/api/v4/projects/${CI_PROJECT_ID}/repository/commits/${CI_COMMIT_SHA}/merge_requests" | jq -c --raw-output ''.[0].labels[] | select(. == "major" or . == "minor" or . == "patch")'' | sort | head -1)'
     - echo ${BUMP_PART}
     - python3 -m pip install bump2version
