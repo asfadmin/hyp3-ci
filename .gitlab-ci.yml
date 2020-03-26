@@ -36,7 +36,6 @@ variables:
 .mr_protected_template: &only_mr_protected
   only:
     - merge_requests
-  except:
     variables:
       - $CI_COMMIT_REF_PROTECTED == 'true'
 
@@ -208,6 +207,7 @@ package S3 PyPI:
     - s3pypi --bucket hyp3-pypi --verbose
   <<: *only_mr_protected
 
+
 Dockerize:
   stage: dockerize
   tags:
@@ -217,8 +217,6 @@ Dockerize:
     - python3 -m pip install --user "setuptools>=42" wheel "setuptools-scm[toml]>=3.4"
     - export SDIST_VERSION=$(python3 setup.py --version)
     - export CI_JOB_TIMESTAMP=$(date --utc --rfc-3339=seconds)
-    - aws s3 cp s3://hyp3-docker/software/isce-2.0.0_20160906.tar.gz .
-    - tar -zxvf isce-2.0.0_20160906.tar.gz
   script:
     - docker build --no-cache
       -t ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_}
@@ -234,6 +232,7 @@ Dockerize:
     - docker push ${HYP3_REGISTRY}/hyp3-ci:latest
   <<: *only_mr_protected
 
+
 test S3 PyPI:
   stage: verify
   before_script:
@@ -244,20 +243,42 @@ test S3 PyPI:
     - tox -e py37-verify
   <<: *only_mr_protected
 
+verify dockerize (test):
+  stage: verify
+  tags:
+    - docker
+  before_script:
+    - python2 -m pip install --user colorama
+    - python3 -m pip install --user "setuptools>=42" wheel "setuptools-scm[toml]>=3.4"
+    - export SDIST_VERSION=$(python3 setup.py --version)
+  script:
+    - docker tag ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_} ${HYP3_REGISTRY}/hyp3-ci:test
+    - docker push ${HYP3_REGISTRY}/hyp3-ci:test
+  needs:
+    - job: "dockerize"
+      artifacts: true
+  only:
+    - develop
+
+verify dockerize:
+  stage: verify
+  tags:
+    - docker
+  before_script:
+    - python2 -m pip install --user colorama
+    - python3 -m pip install --user "setuptools>=42" wheel "setuptools-scm[toml]>=3.4"
+    - export SDIST_VERSION=$(python3 setup.py --version)
+  script:
+    - docker tag ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_} ${HYP3_REGISTRY}/hyp3-ci:latest
+    - docker push ${HYP3_REGISTRY}/hyp3-ci:latest
+  needs:
+    - job: "dockerize"
+      artifacts: true
+  only:
+    - master
 
 
 # TODO: Verify and scan docker container...
 #       * static analysis: https://github.com/optiopay/klar
 #       * Or: https://anchore.com/opensource/
 #       * See: https://docs.gitlab.com/ee/user/application_security/container_scanning/
-# ----------------------------------------------------------------------------------------------------------------------
-#Test container:
-#  stage: verify
-#  tags:
-#    - docker
-#  script:
-#    - export SDIST_VERSION=$(python3 setup.py --version)
-#    # DO VERIFY
-#    - docker tag ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_} ${HYP3_REGISTRY}/hyp3-ci:latest
-#    - aws ecr get-login-password | docker login --username AWS --password-stdin ${HYP3_REGISTRY}
-#    - docker push ${HYP3_REGISTRY}/hyp3-ci:latest
