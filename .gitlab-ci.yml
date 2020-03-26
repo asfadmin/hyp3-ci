@@ -64,6 +64,7 @@ Tag version:
     - *before_defaults
     - 'which ssh-agent || ( apt-get update -y && apt-get install -y openssh-client)'
     - eval $(ssh-agent -s)
+    - chmod 600 "${GITLAB_TOOLS_BOT_SSH}"
     - ssh-add "${GITLAB_TOOLS_BOT_SSH}"
     - git config --global user.email "uaf-asf-apd@alaska.edu"
     - git config --global user.name "Tools-bot"
