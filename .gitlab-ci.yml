@@ -35,7 +35,8 @@ variables:
 
 .mr_protected_template: &only_mr_protected
   only:
-    - merge_requests
+    refs:
+      - merge_requests
     variables:
       - $CI_COMMIT_REF_PROTECTED == 'true'
 
@@ -208,7 +209,7 @@ package S3 PyPI:
   <<: *only_mr_protected
 
 
-Dockerize:
+dockerize:
   stage: dockerize
   tags:
     - docker
