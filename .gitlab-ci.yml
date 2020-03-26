@@ -61,10 +61,9 @@ stages:
 Tag version:
   stage: tools-bot
   before_script:
-    - *before_defaults
     - chmod 600 ${GITLAB_TOOLS_BOT_SSH}
     - cat ${GITLAB_TOOLS_BOT_SSH}
-    - git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ${GITLAB_TOOLS_BOT_SSH} -F /dev/null"
+    - git config core.sshCommand "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i ${GITLAB_TOOLS_BOT_SSH} -F /dev/null"
     - git config --global user.email "UAF-asf-apd@alaska.edu"
     - git config --global user.name "Tools-bot"
     - git remote set-url origin git@scm.asf.alaska.edu:hyp3/hyp3-ci.git
@@ -72,6 +71,7 @@ Tag version:
     - apt-get install -y jq curl
     - 'export MERGE_REQUEST_PARENT=$(git log --pretty=%P -n 1 "${CI_COMMIT_SHA}" | awk -F '' '' ''{print $2}'')'
     - 'export BUMP_PART=$(curl -LsS -H "PRIVATE-TOKEN: ${GITLAB_TOOLS_BOT_PAK}" "https://scm.asf.alaska.edu/api/v4/projects/${CI_PROJECT_ID}/repository/commits/${MERGE_REQUEST_PARENT}/merge_requests" | jq -c --raw-output ''.[0].labels[] | select(. == "major" or . == "minor" or . == "patch")'' | sort | head -1)'
+    - *before_defaults
     - python3 -m pip install bump2version
   script:
     - 'bump2version --current-version $(git describe --abbrev=0) --tag --tag-message "$(printf "%q" "${CI_COMMIT_MESSAGE}")" "${BUMP_PART}"'
