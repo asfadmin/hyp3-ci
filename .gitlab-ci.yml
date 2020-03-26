@@ -227,9 +227,6 @@ dockerize:
     # - aws ecr get-login-password | docker login --username AWS --password-stdin ${HYP3_REGISTRY}
     - $(aws ecr get-login --no-include-email)
     - docker push ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_}
-    # FIXME: Move down to verify job -- only push latest *after* container analysis passes
-    - docker tag ${HYP3_REGISTRY}/hyp3-ci:${SDIST_VERSION/+/_} ${HYP3_REGISTRY}/hyp3-ci:latest
-    - docker push ${HYP3_REGISTRY}/hyp3-ci:latest
   <<: *only_mr_protected
 
 
