@@ -63,8 +63,7 @@ Tag version:
   before_script:
     - 'mkdir -p ${HOME}/.ssh && chmod 700 ${HOME}/.ssh && cp ${GITLAB_TOOLS_BOT_SSH} ${HOME}/.ssh/id_rsa && chmod 600 ${HOME}/.ssh/id_rsa'
     - git config core.sshCommand "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${HOME}/.ssh/id_rsa -F /dev/null"
-    - ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${HOME}/.ssh/id_rsa
-    -F /dev/null -vvvT git@scm.asf.alaska.edu
+    - ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${HOME}/.ssh/id_rsa -F /dev/null -vvvT git@scm.asf.alaska.edu
     - git config --global user.email "jhkennedy@alaska.edu"
     - git config --global user.name "Tools-bot"
     - git remote set-url origin git@scm.asf.alaska.edu:hyp3/hyp3-ci.git
