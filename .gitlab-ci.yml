@@ -54,7 +54,7 @@ stages:
     - test
     - dependancy analysis
     - package
-    - dockerize
+    - containerize
     - verify
     # TODO: - trigger
 
@@ -210,7 +210,7 @@ package S3 PyPI:
 
 
 dockerize:
-  stage: dockerize
+  stage: containerize
   tags:
     - docker
   before_script:
