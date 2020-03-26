@@ -77,7 +77,7 @@ Tag version:
     - git push --tags
     - git checkout develop && git pull --ff-only
     - git merge --ff-only origin/master
-    - git push
+    - git push -o ci.skip
   only:
     - master
 
