@@ -35,10 +35,9 @@ variables:
 
 .mr_protected_template: &only_mr_protected
   only:
-    refs:
-      - merge_requests
-    variables:
-      - $CI_COMMIT_REF_PROTECTED == 'true'
+    - merge_requests
+    - master
+    - develop
 
 
 default:
