@@ -62,6 +62,7 @@ Tag version:
   stage: tools-bot
   before_script:
     - 'mkdir -p ${HOME}/.ssh && chmod 700 ${HOME}/.ssh && cp ${GITLAB_TOOLS_BOT_SSH} ${HOME}/.ssh/id_rsa && chmod 600 ${HOME}/.ssh/id_rsa'
+    - ls -lah $HOME && ls -lah ${HOME}/.ssh
     - git config core.sshCommand "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${HOME}/.ssh/id_rsa -F /dev/null"
     - ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${HOME}/.ssh/id_rsa -F /dev/null -vvvT git@scm.asf.alaska.edu
     - git config --global user.email "jhkennedy@alaska.edu"
