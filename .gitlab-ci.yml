@@ -73,7 +73,7 @@ Tag version:
     - echo ${BUMP_PART}
     - python3 -m pip install bump2version
   script:
-    - bump2version --current-version $(git describe --abbrev=0) --tag --tag-message "${CI_COMMIT_MESSAGE}" "${BUMP_PART}"
+    - 'bump2version --current-version $(git describe --abbrev=0) --tag --tag-message "$(printf "%q" "${CI_COMMIT_MESSAGE}")" "${BUMP_PART}"'
     - git checkout develop && git pull --ff-only
     - git merge --ff-only master
     - git push --all --tags
