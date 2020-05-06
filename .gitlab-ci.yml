@@ -56,6 +56,7 @@ default:
 
 stages:
     - tools-bot
+    - trigger merge-back
     - static analysis
     - test
     - dependancy analysis
@@ -65,7 +66,7 @@ stages:
     # TODO: - trigger
 
 
-Tag version:
+tag version:
   stage: tools-bot
   before_script:
     - chmod 600 ${GITLAB_TOOLS_BOT_SSH}
@@ -76,16 +77,17 @@ Tag version:
     - git remote set-url origin git@scm.asf.alaska.edu:hyp3/hyp3-ci.git
     - git fetch --all
     - apt-get install -y jq curl
-    - 'export MERGE_REQUEST_PARENT=$(git log --pretty=%P -n 1 "${CI_COMMIT_SHA}" | awk -F '' '' ''{print $2}'')'
-    - 'export BUMP_PART=$(curl -LsS -H "PRIVATE-TOKEN: ${GITLAB_TOOLS_BOT_PAK}" "https://scm.asf.alaska.edu/api/v4/projects/${CI_PROJECT_ID}/repository/commits/${MERGE_REQUEST_PARENT}/merge_requests" | jq -c --raw-output ''.[0].labels[] | select(. == "major" or . == "minor" or . == "patch")'' | sort | head -1)'
     - *before_defaults
     - python3 -m pip install bump2version
   script:
-    - 'bump2version --current-version $(git describe --abbrev=0) --tag --tag-message "$(printf "%q" "${CI_COMMIT_MESSAGE}")" "${BUMP_PART}"'
-    - git push --tags
-    - git checkout develop && git pull --ff-only
-    - git merge --ff-only origin/master
-    - git push -o ci.skip
+    - source .gitlab/tag_version.sh
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
+
+master to develop:
+  stage: trigger merge-back
+  trigger:
+    include: .gitlab/merge_back.gitlab-ci.yaml
   rules:
     - if: $CI_COMMIT_REF_NAME == "master"
 
