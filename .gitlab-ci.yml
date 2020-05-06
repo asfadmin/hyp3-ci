@@ -56,6 +56,7 @@ default:
 
 stages:
     - tools-bot
+    - trigger merge-back
     - static analysis
     - test
     - dependancy analysis
@@ -65,7 +66,7 @@ stages:
     # TODO: - trigger
 
 
-Tag version:
+tag version:
   stage: tools-bot
   before_script:
     - chmod 600 ${GITLAB_TOOLS_BOT_SSH}
@@ -86,6 +87,13 @@ Tag version:
     - git checkout develop && git pull --ff-only
     - git merge --ff-only origin/master
     - git push -o ci.skip
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
+
+master to develop:
+  stage: trigger merge-back
+  trigger:
+    include: .gitlab/merge_back.gitlab-ci.yaml
   rules:
     - if: $CI_COMMIT_REF_NAME == "master"
 
