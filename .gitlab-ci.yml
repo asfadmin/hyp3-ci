@@ -35,12 +35,15 @@ workflow:
 .always_run_template: &always_run
   rules:
     - if: $CI_MERGE_REQUEST_ID
+      when: on_success
     - when: on_success
 
 .mr_protected_template: &only_mr_protected
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
-    - if: $CI_COMMIT_REF_PROTECTED
+      when: on_success
+    - if: $CI_COMMIT_REF_PROTECTED == "true"
+      when: on_success
     - when: never
 
 
