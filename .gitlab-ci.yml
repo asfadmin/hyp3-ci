@@ -12,6 +12,11 @@ variables:
   - python3 -m pip install --upgrade pip
   - python3 -m pip install --upgrade setuptools wheel twine s3pypi "setuptools-scm[toml]" importlib_metadata
 
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: always
 
 # NOTE: the templates below are so that we can add additional jobs to the CI
 #       pipeline for merge requests (MR). Ideally, anytime someone pushes to *any*
@@ -19,9 +24,8 @@ variables:
 #       opened, we'd add in building and deploying the python package to S3 and
 #       the docker container to ECR so that reviewers can easily test the MR.
 #       HOWEVER, gitlab's merge requests pipelines work differently than other
-#       pipelines meaning we need to specify `only: [branches, merge_requests]`
-#       for jobs we want to always run:
-#           https://stackoverflow.com/questions/52746338/in-gitlab-ci-is-there-a-variable-for-a-merge-requests-target-branch/52944197#52944197
+#       pipelines meaning we need to specify enable them for jobs we want to run:
+#           https://docs.gitlab.com/12.10/ee/ci/merge_request_pipelines/index.html
 #       But doing so creates both a "push" pipeline and a "MR" pipeline, so the
 #       `always_run` jobs are run in duplicate. There doesn't seem to be any
 #       easy way around this currently:
@@ -29,15 +33,14 @@ variables:
 #      So, our team we'll have to live with duplicates for a bit, and follow
 #      "only open a MR when you're ready for review!" best practice.
 .always_run_template: &always_run
-  only:
-    - branches
-    - merge_requests
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - when: on_success
 
 .mr_protected_template: &only_mr_protected
-  only:
-    - merge_requests
-    - master
-    - develop
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+    - if: $CI_COMMIT_REF_PROTECTED
 
 
 default:
@@ -79,8 +82,8 @@ Tag version:
     - git checkout develop && git pull --ff-only
     - git merge --ff-only origin/master
     - git push -o ci.skip
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
 
 
 bandit SAST:
@@ -253,8 +256,8 @@ verify dockerize (test):
   needs:
     - job: "dockerize"
       artifacts: true
-  only:
-    - develop
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "develop"
 
 verify dockerize:
   stage: verify
@@ -272,8 +275,8 @@ verify dockerize:
   needs:
     - job: "dockerize"
       artifacts: true
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
 
 
 # TODO: Verify and scan docker container...
