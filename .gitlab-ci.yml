@@ -81,14 +81,14 @@ tag version:
   script:
     - source .gitlab/tag_version.sh
   rules:
-    - if: $CI_COMMIT_REF_NAME == "master"
+    - if: $CI_COMMIT_REF_NAME == "master" && $CI_MERGE_REQUEST_ID == null
 
 master to develop:
   stage: trigger merge-back
   trigger:
     include: .gitlab/merge_back.gitlab-ci.yaml
   rules:
-    - if: $CI_COMMIT_REF_NAME == "master"
+    - if: $CI_COMMIT_REF_NAME == "master" && $CI_MERGE_REQUEST_ID == null
 
 
 bandit SAST:

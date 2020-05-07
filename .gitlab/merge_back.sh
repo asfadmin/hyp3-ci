@@ -5,7 +5,7 @@
 
 # Get the default branch as our MR target
 TARGET_BRANCH=$(curl --silent "${GITLAB_API}/${CI_PROJECT_ID}" --header "PRIVATE-TOKEN:${GITLAB_TOOLS_BOT_PAK}" | \
-    python3 -c "import sys, json; print(json.load(sys.stdin)["default_branch"])" \
+    jq -c --raw-output '.default_branch' \
     )
 
 MR_TITLE="\"Bring ${CI_COMMIT_REF_NAME} into ${TARGET_BRANCH}\""
@@ -14,13 +14,13 @@ MR_DATA="{
         \"id\": ${CI_PROJECT_ID},
         \"source_branch\": \"${CI_COMMIT_REF_NAME}\",
         \"target_branch\": \"${TARGET_BRANCH}\",
-        \"remove_source_branch\": true,
+        \"remove_source_branch\": false,
         \"title\": ${MR_TITLE},
         \"assignee_id\":\"${GITLAB_USER_ID}\"
     }"
 
 # Open the MR
-curl -X POST "${GITLAB_API}${CI_PROJECT_ID}/merge_requests" \
+curl -X POST "${GITLAB_API}/${CI_PROJECT_ID}/merge_requests" \
     --header "PRIVATE-TOKEN:${GITLAB_TOOLS_BOT_PAK}" \
     --header "Content-Type: application/json" \
     --data "${MR_DATA}"

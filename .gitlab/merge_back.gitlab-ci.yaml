@@ -32,7 +32,7 @@ ff merge:
 open merge-request:
   stage: on-fail
   before_script:
-    - apt-get install -y curl
+    - apt-get install -y jq curl
   script:
     - source .gitlab/merge_back.sh
   when: on_failure
