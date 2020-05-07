@@ -14,8 +14,13 @@ variables:
 
 workflow:
   rules:
+    # Don't run pipelines for tags because they will be created in the tools-bot stage
     - if: $CI_COMMIT_TAG
       when: never
+    # Don't run pipelines from merge requests out of master (should always be redundant)
+    - if: $CI_COMMIT_REF_NAME == "master" && $CI_MERGE_REQUEST_ID
+      when: never
+    # Otherwise, run the pipelines as defined below
     - when: always
 
 # NOTE: the templates below are so that we can add additional jobs to the CI
