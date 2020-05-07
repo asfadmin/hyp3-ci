@@ -220,7 +220,7 @@ package S3 PyPI:
     - echo "Building version $(python3 setup.py --version)"
     - python3 setup.py sdist bdist_wheel
     - echo "Uploading version $(python3 setup.py --version) to S3-PyPI"
-    - s3pypi --bucket hyp3-pypi --verbose
+    - s3pypi --bucket hyp3-pypi --force --verbose
   <<: *only_mr_protected
 
 
