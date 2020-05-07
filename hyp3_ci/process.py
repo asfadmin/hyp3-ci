@@ -5,7 +5,7 @@ ci processing
 import argparse
 import logging
 
-import hyp3_ci
+from hyp3_ci import __version__
 
 log = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ def main():
     )
     parser.add_argument('--hello-world', action='store_true',
                         help='Print "Hello world!"')
-    parser.add_argument('--version', action='version', version=f'%(prog)s {hyp3_ci.__version__}')
+    parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     args = parser.parse_args()
 
     process(**args.__dict__)
