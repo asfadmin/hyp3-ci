@@ -23,7 +23,6 @@ ff merge:
     - git config --global user.name "Tools-bot"
     - git remote set-url origin git@scm.asf.alaska.edu:hyp3/hyp3-ci.git
     - git fetch --all
-    - apt-get install -y jq curl
   script:
     - git checkout develop && git pull --ff-only
     - git merge --ff-only origin/master
@@ -32,7 +31,8 @@ ff merge:
 
 open merge-request:
   stage: on-fail
-  before_script: [] # Only using GitLab defined variables, so we don't need any setup
+  before_script:
+    - apt-get install -y curl
   script:
     - source .gitlab/merge_back.sh
   when: on_failure
