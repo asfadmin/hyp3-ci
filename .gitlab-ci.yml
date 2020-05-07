@@ -63,7 +63,6 @@ stages:
     - package
     - containerize
     - verify
-    # TODO: - trigger
 
 
 tag version:
@@ -289,3 +288,5 @@ verify dockerize:
 #       * static analysis: https://github.com/optiopay/klar
 #       * Or: https://anchore.com/opensource/
 #       * See: https://docs.gitlab.com/ee/user/application_security/container_scanning/
+# TODO: - trigger downstream...
+#       For hyp3-lib and hyp3-proc-lib, trigger pipelines to test with latest version... only for major?
