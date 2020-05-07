@@ -3,6 +3,11 @@
 variables:
   GIT_DEPTH: 0
 
+default:
+  image:
+    name: continuumio/miniconda3:4.7.12
+    entrypoint: ["/bin/bash"]
+
 stages:
   - attempt
   - on-fail
@@ -18,6 +23,7 @@ ff merge:
     - git config --global user.name "Tools-bot"
     - git remote set-url origin git@scm.asf.alaska.edu:hyp3/hyp3-ci.git
     - git fetch --all
+    - apt-get install -y jq curl
   script:
     - git checkout develop && git pull --ff-only
     - git merge --ff-only origin/master
