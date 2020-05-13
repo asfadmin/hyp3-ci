@@ -58,7 +58,6 @@ jobs:
           python-version: 3.7
           activate-environment: hyp3-ci
           environment-file: conda-env.yml
-          channel-priority: strict
       - name: Pytest in conda environment
         shell: bash -l {0}
         run: |
