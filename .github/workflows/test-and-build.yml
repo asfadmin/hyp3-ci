@@ -74,9 +74,10 @@ jobs:
       - name: Build distribuion and upload to S3-PyPI
         id: build
         run: |
-          echo "::set-output name=version::$(python setup.py --version)"
+          export SDIST_VERSION=$(python setup.py --version)
+          echo "::set-output name=version::${SDIST_VERSION}"
           python setup.py sdist bdist_wheel
-          echo "Uploading version $(python setup.py --version) to S3-PyPI"
+          echo "Uploading version ${SDIST_VERSION} to S3-PyPI"
           s3pypi --bucket hyp3-pypi --force --verbose
 
 
@@ -99,7 +100,7 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          export SDIST_VERSION=${{needs.pytest.outputs.SDIST_VERSION}}
+          export SDIST_VERSION=${{ needs.pytest.outputs.SDIST_VERSION }}
           export CI_JOB_TIMESTAMP=$(date --utc --rfc-3339=seconds)
           echo "Building ${HYP3_REGISTRY}/${GITHUB_REPOSITORY##*/}:${SDIST_VERSION/+/_}"
           docker build --no-cache \
