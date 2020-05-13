@@ -46,5 +46,6 @@ jobs:
           python -m pip install trufflehog gitdb2=="2.*"
       - name: Scan for secrets with trufflehog
         run: |
+          git fetch origin +refs/tags/*:refs/tags/*
           export LAST_TAG_HASH=$(git show-ref --hash -- $(git describe --abbrev=0))
           trufflehog --regex --entropy True --since_commit "${LAST_TAG_HASH}" file://"${PWD}"
