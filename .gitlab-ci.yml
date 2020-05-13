@@ -96,34 +96,6 @@ master to develop:
     - if: $CI_COMMIT_REF_NAME == "master" && $CI_MERGE_REQUEST_ID == null
 
 
-
-pytest 37:
-  stage: test
-  before_script:
-    - *before_conda_env
-  script:
-    - tox --develop -e py37 -- --cov=hyp3_ci
-  coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+%)/'
-  artifacts:
-    paths:
-      - pip_freeze_*.txt
-      - conda_export_*.txt
-  <<: *always_run
-
-safety 37:
-  stage: dependancy analysis
-  before_script:
-    - *before_defaults
-    - python3 -m pip install safety
-  script:
-    - safety check --full-report --stdin < pip_freeze_py37.txt
-    - awk -F '=' '/^[^#]/ {print $1 "==" $2}' conda_export_py37.txt | safety check --full-report --stdin
-  needs:
-    - job: "pytest 37"
-      artifacts: true
-  <<: *always_run
-
-
 package S3 PyPI:
   stage: package
   script:

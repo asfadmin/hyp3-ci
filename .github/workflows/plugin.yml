@@ -3,16 +3,13 @@ name: HyP3 Plugin
 on: push
 
 jobs:
-
   flake8:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: 3.7
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -20,7 +17,6 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 --max-line-length=120 --import-order-style=pycharm --statistics --application-import-names hyp3_ci
-
 
   gitleaks:
     runs-on: ubuntu-latest
@@ -30,7 +26,6 @@ jobs:
           fetch-depth: '0'
       - name: Scan for secrets with gitleaks
         uses: zricethezav/gitleaks-action@master
-
 
   trufflehog:
     runs-on: ubuntu-latest
@@ -50,3 +45,26 @@ jobs:
           export LAST_TAG_HASH=$(git show-ref --hash -- $(git describe --abbrev=0))
           echo '\.gitlab\/gitleaks\.toml' > exclude-patterns.txt
           trufflehog --regex --entropy True --since_commit "${LAST_TAG_HASH}" --exclude_paths exclude-patterns.txt file://"${PWD}"
+
+  Pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - uses: goanpeca/setup-miniconda@v1
+        with:
+          auto-update-conda: true
+          python-version: 3.7
+          activate-environment: hyp3-ci
+          environment-file: conda-env.yml
+          channel-priority: strict
+      - name: Pytest in conda environment
+        shell: bash -l {0}
+        run: |
+          pytest --cov=hyp3_ci
+      - name: Safety analysis of conda environment
+        shell: bash -l {0}
+        run: |
+          python -m pip freeze | safety check --full-report --stdin
+          conda list --export | awk -F '=' '/^[^#]/ {print $1 "==" $2}' | safety check --full-report --stdin

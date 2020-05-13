@@ -1,0 +1,36 @@
+name: hyp3-ci
+channels:
+  - conda-forge
+dependencies:
+  - boto3
+  - gdal
+  - imageio
+  - importlib_metadata
+  - lxml
+  - matplotlib
+  - netCDF4
+  - numpy
+  - pillow
+  - pip
+  - proj
+  - psycopg2
+  - pyshp
+  - pytest
+  - pytest-console-scripts
+  - pytest-cov
+  - requests
+  - scipy
+  - setuptools
+  - six
+  - statsmodels
+  - wheel
+  - pip:
+    - --trusted-host hyp3-pypi.s3-website-us-east-1.amazonaws.com
+      --extra-index-url https://hyp3-pypi.s3-website-us-east-1.amazonaws.com
+      hyp3lib
+    - --trusted-host hyp3-pypi.s3-website-us-east-1.amazonaws.com
+      --extra-index-url https://hyp3-pypi.s3-website-us-east-1.amazonaws.com
+      hyp3proclib
+    - s3pypi
+    - setuptools-scm[toml]
+    - safety
