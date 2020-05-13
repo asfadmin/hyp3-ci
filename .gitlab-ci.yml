@@ -96,55 +96,6 @@ master to develop:
     - if: $CI_COMMIT_REF_NAME == "master" && $CI_MERGE_REQUEST_ID == null
 
 
-bandit SAST:
-  stage: static analysis
-  before_script:
-    - *before_defaults
-    - python3 -m pip install bandit
-  script:
-    - bandit -r hyp3_ci || true  # suppress error for this run
-    - bandit -r hyp3_ci -f html -o bandit_report.html
-  allow_failure: true
-  artifacts:
-    when: on_failure
-    paths:
-      - bandit_report.html
-  <<: *always_run
-
-
-pylint:
-  stage: static analysis
-  before_script:
-    - *before_defaults
-    - python3 -m pip install pylint
-  script:
-    - pylint -r y  hyp3_ci 2>&1 | tee pylint_report.txt
-  allow_failure: true
-  artifacts:
-    when: on_failure
-    paths:
-      - pylint_report.txt
-  <<: *always_run
-
-xenon:
-  stage: static analysis
-  before_script:
-    - *before_defaults
-    - python3 -m pip install xenon radon
-  script:
-    - xenon -a B -m A -b A hyp3_ci
-  after_script:
-    - radon cc -s -a -O radon_cc_report.txt hyp3_ci
-    - radon raw -s -O radon_raw_report.txt hyp3_ci
-    - radon mi -s -x F -O radon_mi_report.txt hyp3_ci
-    - radon hal -O radon_hal_report.txt hyp3_ci
-  allow_failure: true
-  artifacts:
-    when: on_failure
-    paths:
-      - radon_*_report.txt
-  <<: *always_run
-
 
 pytest 37:
   stage: test
