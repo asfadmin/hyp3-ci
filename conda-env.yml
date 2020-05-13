@@ -2,8 +2,17 @@ name: hyp3-ci
 channels:
   - conda-forge
 dependencies:
+  - python=3.7
+  - pip
+  # For packaging, and testing
+  - setuptools
+  - wheel
+  - pytest
+  - pytest-console-scripts
+  - pytest-cov
+  # For running
   - boto3
-  - gdal
+  - gdal=2.*
   - imageio
   - importlib_metadata
   - lxml
@@ -11,26 +20,20 @@ dependencies:
   - netCDF4
   - numpy
   - pillow
-  - pip
   - proj
   - psycopg2
   - pyshp
-  - pytest
-  - pytest-console-scripts
-  - pytest-cov
   - requests
   - scipy
-  - setuptools
   - six
   - statsmodels
-  - wheel
   - pip:
-    - --trusted-host hyp3-pypi.s3-website-us-east-1.amazonaws.com
-      --extra-index-url https://hyp3-pypi.s3-website-us-east-1.amazonaws.com
-      hyp3lib
-    - --trusted-host hyp3-pypi.s3-website-us-east-1.amazonaws.com
-      --extra-index-url https://hyp3-pypi.s3-website-us-east-1.amazonaws.com
-      hyp3proclib
+    # for packaging and testing
     - s3pypi
     - setuptools-scm[toml]
     - safety
+    # For running
+    - --trusted-host hyp3-pypi.s3-website-us-east-1.amazonaws.com
+      --extra-index-url http://hyp3-pypi.s3-website-us-east-1.amazonaws.com
+    - hyp3lib
+    - hyp3proclib
