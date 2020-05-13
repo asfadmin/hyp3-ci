@@ -52,4 +52,4 @@ title = "gitleaks config"
     tags = ["key", "slack"]
 [whitelist]
     description = "Whitelisted files"
-    file = '''(^\.?gitleaks.toml$|(.*?)(jpg|gif|doc|pdf|bin)$)'''
+    file = '''(^\.?gitleaks.toml$|^\.gitlab\/gitleaks\.toml|(.*?)(jpg|gif|doc|pdf|bin)$)'''
