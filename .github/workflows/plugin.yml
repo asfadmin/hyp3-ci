@@ -48,4 +48,5 @@ jobs:
         run: |
           git fetch origin +refs/tags/*:refs/tags/*
           export LAST_TAG_HASH=$(git show-ref --hash -- $(git describe --abbrev=0))
-          trufflehog --regex --entropy True --since_commit "${LAST_TAG_HASH}" file://"${PWD}"
+          echo '\.gitlab\/gitleaks\.toml' > exclude-patterns.txt
+          trufflehog --regex --entropy True --since_commit "${LAST_TAG_HASH}" --exclude_paths exclude-patterns.txt file://"${PWD}"
