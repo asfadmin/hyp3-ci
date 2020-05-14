@@ -74,6 +74,7 @@ jobs:
       - name: Build distribuion and upload to S3-PyPI
         id: build
         run: |
+          git fetch origin +refs/tags/*:refs/tags/*
           export SDIST_VERSION=$(python setup.py --version)
           echo "::set-output name=version::${SDIST_VERSION}"
           python setup.py sdist bdist_wheel
