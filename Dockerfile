@@ -2,7 +2,7 @@ FROM continuumio/miniconda3:4.7.12
 
 # For opencontainers label definitions, see:
 #    https://github.com/opencontainers/image-spec/blob/master/annotations.md
-LABEL org.opencontainers.image.title="Hyp3 CI"
+LABEL org.opencontainers.image.title="HyP3 CI"
 LABEL org.opencontainers.image.description="A space to play with CI/CD pipelines for HyP3"
 LABEL org.opencontainers.image.vendor="Alaska Satellite Facility"
 LABEL org.opencontainers.image.authors="ASF APD/Tools Team <uaf-asf-apd@alaska.edu>"
