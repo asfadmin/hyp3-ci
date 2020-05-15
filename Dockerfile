@@ -17,7 +17,8 @@ LABEL org.opencontainers.image.source="https://scm.asf.alaska.edu/hyp3/hyp3-ci"
 # LABEL org.opencontainers.image.revision=""
 
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y unzip vim && apt-get clean
+RUN apt-get update && apt-get install -y --no-install-recommends unzip vim && \
+ apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG CONDA_GID=1000
 ARG CONDA_UID=1000
