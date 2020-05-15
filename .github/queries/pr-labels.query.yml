@@ -1,5 +1,5 @@
 query: '
-  query($owner:String!, $name:String!, pr:Int!) {
+  query($owner:String!, $name:String!, $pr:Int!) {
     repository(owner:$owner, name:$name) {
       pullRequest(number:$pr) {
         labels(first:100) {
