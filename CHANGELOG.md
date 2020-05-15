@@ -13,4 +13,3 @@ TBD
 ## [v0.1.0](https://scm.asf.alaska.edu/hyp3/hyp3-ci/compare/v0.0.0...v0.1.0)
 
 A minimal package created with cookiecutter-hyp3plugin and a full setup of the CI/CD pipeline
-
