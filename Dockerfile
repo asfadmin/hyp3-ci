@@ -7,8 +7,8 @@ LABEL org.opencontainers.image.description="A space to play with CI/CD pipelines
 LABEL org.opencontainers.image.vendor="Alaska Satellite Facility"
 LABEL org.opencontainers.image.authors="ASF APD/Tools Team <uaf-asf-apd@alaska.edu>"
 LABEL org.opencontainers.image.licenses="BSD-3-Clause"
-LABEL org.opencontainers.image.url="https://scm.asf.alaska.edu/hyp3/hyp3-ci"
-LABEL org.opencontainers.image.source="https://scm.asf.alaska.edu/hyp3/hyp3-ci"
+LABEL org.opencontainers.image.url="https://github.com/asfadmin/hyp3-ci"
+LABEL org.opencontainers.image.source="https://github.com/asfadmin/hyp3-ci"
 # LABEL org.opencontainers.image.documentation=""
 
 # Dynamic lables to define at build time via `docker build --label`
@@ -18,7 +18,7 @@ LABEL org.opencontainers.image.source="https://scm.asf.alaska.edu/hyp3/hyp3-ci"
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends unzip vim && \
- apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG CONDA_GID=1000
 ARG CONDA_UID=1000

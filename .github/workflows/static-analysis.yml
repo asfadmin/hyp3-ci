@@ -19,7 +19,8 @@ jobs:
 
     - name: Lint with flake8
       run: |
-        flake8 --max-line-length=120 --import-order-style=pycharm --statistics --application-import-names hyp3_ci
+        flake8 --max-line-length=120 --import-order-style=pycharm --statistics \
+            --application-import-names hyp3_ci
 
 
   gitleaks:
@@ -53,5 +54,6 @@ jobs:
           git fetch origin +refs/tags/*:refs/tags/*
           export LAST_TAG_HASH=$(git show-ref --hash -- $(git describe --abbrev=0))
           echo '\.gitlab\/gitleaks\.toml' > exclude-patterns.txt
-          trufflehog --regex --entropy True --since_commit "${LAST_TAG_HASH}" --exclude_paths exclude-patterns.txt file://"${PWD}"
+          trufflehog --regex --entropy True --since_commit "${LAST_TAG_HASH}" \
+              --exclude_paths exclude-patterns.txt file://"${PWD}"
 
