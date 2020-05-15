@@ -57,7 +57,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           source_branch: master
-          destination_branch: default
+          destination_branch: develop
           pr_title: Pulling ${{ github.ref }} into default
           pr_body: Fast-forward of master to default failed!
           pr_assignee: ${{ github.actor }}
