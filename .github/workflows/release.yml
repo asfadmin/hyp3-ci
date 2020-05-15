@@ -47,12 +47,13 @@ jobs:
 
       - name: Attempt fast-forward develop from master
         run: |
-          git fetch --prune --unshallow
+          git fetch --prune
           git checkout develop && git pull --ff-only
           git merge --ff-only origin/master
           git push
 
       - name: Open PR to bring master back to develop
+        if: ${{ failure() }}
         uses: repo-sync/pull-request@v2
         with:
           source_branch: master
