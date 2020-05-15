@@ -101,6 +101,8 @@ jobs:
         if: github.ref == 'refs/heads/master'
         run: |
           git fetch origin +refs/tags/*:refs/tags/*
+          git config user.email "UAF-asf-apd@alaska.edu"
+          git config user.name "tools-bot"
 
           LABEL_QUERY='.data.repository.pullRequest.labels.nodes[].name'
           SELECT='select(. == "major" or . == "minor" or . == "patch")'
