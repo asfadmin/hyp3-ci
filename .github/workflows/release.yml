@@ -40,4 +40,5 @@ jobs:
           pr_assignee: ${{ github.actor }}
           pr_label: tools-bot
           pr_draft: false
+          pr_allow_empty: true
           github_token: ${{ secrets.TOOLS_BOT_PAK }}
