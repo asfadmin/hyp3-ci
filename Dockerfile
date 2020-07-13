@@ -7,8 +7,8 @@ LABEL org.opencontainers.image.description="A space to play with CI/CD pipelines
 LABEL org.opencontainers.image.vendor="Alaska Satellite Facility"
 LABEL org.opencontainers.image.authors="ASF APD/Tools Team <uaf-asf-apd@alaska.edu>"
 LABEL org.opencontainers.image.licenses="BSD-3-Clause"
-LABEL org.opencontainers.image.url="https://scm.asf.alaska.edu/hyp3/hyp3-ci"
-LABEL org.opencontainers.image.source="https://scm.asf.alaska.edu/hyp3/hyp3-ci"
+LABEL org.opencontainers.image.url="https://github.com/asfadmin/hyp3-ci"
+LABEL org.opencontainers.image.source="https://github.com/asfadmin/hyp3-ci"
 # LABEL org.opencontainers.image.documentation=""
 
 # Dynamic lables to define at build time via `docker build --label`
@@ -18,7 +18,7 @@ LABEL org.opencontainers.image.source="https://scm.asf.alaska.edu/hyp3/hyp3-ci"
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends unzip vim && \
- apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG CONDA_GID=1000
 ARG CONDA_UID=1000
@@ -34,19 +34,17 @@ RUN groupadd -g "${CONDA_GID}" --system conda && \
 USER ${CONDA_UID}
 SHELL ["/bin/bash", "-l", "-c"]
 ENV PYTHONDONTWRITEBYTECODE=true
-WORKDIR /home/conda/
-
-RUN conda create -y -c conda-forge -n hyp3-ci python=3.7 \
-    boto3 gdal imageio importlib_metadata lxml matplotlib netCDF4 numpy \
-    pillow proj psycopg2 requests scipy setuptools six statsmodels wheel && \
-    conda clean -afy && \
-    conda activate hyp3-ci && \
-    sed -i 's/conda activate base/conda activate hyp3-ci/g' /home/conda/.profile
+WORKDIR /home/conda
 
 ARG S3_PYPI_HOST
 ARG SDIST_SPEC
 
-RUN python -m pip install --no-cache-dir hyp3_ci${SDIST_SPEC} \
+COPY conda-env.yml /home/conda/conda-env.yml
+
+RUN conda env create -f conda-env.yml && \
+    conda activate hyp3-ci && \
+    sed -i 's/conda activate base/conda activate hyp3-ci/g' /home/conda/.profile && \
+    python -m pip install --no-cache-dir hyp3_ci${SDIST_SPEC} \
     --trusted-host "${S3_PYPI_HOST}" \
     --extra-index-url "http://${S3_PYPI_HOST}"
 
